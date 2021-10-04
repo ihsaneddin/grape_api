@@ -5,7 +5,7 @@ Gem::Specification.new do |spec|
   spec.version     = GrapeAPI::VERSION
   spec.authors     = [""]
   spec.email       = ["ihsaneddin@gmail.com"]
-  spec.homepage    = "https://github.com/ihsaneddin"
+  spec.homepage    = "https://github.com/ihsaneddin/grape_api"
   spec.summary     = "Summary of GrapeAPI."
   spec.description = "Description of GrapeAPI."
   spec.license     = "MIT"
