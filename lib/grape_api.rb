@@ -15,6 +15,9 @@ module GrapeAPI
   mattr_accessor :base_api_class
   @@base_api_class = "API::Base"
 
+  mattr_accessor :api_namespace
+  @@api_namespace = "Api"
+
   def self.config
     yield(self)
   end

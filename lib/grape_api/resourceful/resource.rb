@@ -266,6 +266,10 @@ module GrapeAPI
           @strong_parameter_object ||= ActionController::Parameters.new(params)
         end
 
+        def permitted_attributes
+          _resource_params
+        end
+
         def _resource_params
           attributes = {}
           if(class_context)
@@ -289,21 +293,27 @@ module GrapeAPI
           attributes
         end
 
+        def _apply_query_includes query
+          unless class_context.query_includes.blank?
+            includes = class_context.query_includes
+            if includes.is_a?(Array)
+              query = query.includes(*class_context.query_includes)
+            else
+              query = query.includes(class_context.query_includes)
+            end
+          end
+          query
+        end
+
         def _query
           if(class_context)
             query = class_context.query_scope
             if query.respond_to?(:call)
-              query = instance_exec(model_class, &query)
+              model = _apply_query_includes(model_class)
+              query = instance_exec(model, &query)
             else
+              query = _apply_query_includes(query)
               query = query.where.not id: nil
-            end
-            unless class_context.query_includes.blank?
-              includes = class_context.query_includes
-              if includes.is_a?(Array)
-                query = query.includes(*class_context.query_includes)
-              else
-                query = query.includes(class_context.query_includes)
-              end
             end
             if(params[:order_by])
               query = query.order params[:order_by]

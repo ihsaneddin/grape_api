@@ -88,10 +88,10 @@ module GrapeAPI
           end
           ver = version.upcase
           begin
-            presenter_class = "::API::#{ver}::Presenters::#{presenter_name}".constantize
+            presenter_class = "::#{GrapeAPI.api_namespace}::#{ver}::Presenters::#{presenter_name}".constantize
           rescue NameError
             begin
-              presenter_class = "::API::#{ver}::Presenters::#{presenter_name.demodulize}".constantize
+              presenter_class = "::#{GrapeAPI.api_namespace}::#{ver}::Presenters::#{presenter_name.demodulize}".constantize
             rescue NameError
               presenter_class = presenter_name.constantize
             end

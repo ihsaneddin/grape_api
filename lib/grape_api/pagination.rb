@@ -98,10 +98,11 @@ module GrapeAPI
       private
 
       def paginate_with_pagy(collection, options)
-        if Pagy::VARS[:max_per_page] && options[:per_page] > Pagy::VARS[:max_per_page]
-          options[:per_page] = Pagy::VARS[:max_per_page]
+        default = Pagy::VERSION >= "4" ? Pagy::DEFAULT : Pagy::VARS
+        if default[:max_per_page] && options[:per_page] > default[:max_per_page]
+          options[:per_page] = default[:max_per_page]
         elsif options[:per_page] <= 0
-          options[:per_page] = Pagy::VARS[:items]
+          options[:per_page] = default[:items]
         end
 
         pagy = pagy_from(collection, options)
