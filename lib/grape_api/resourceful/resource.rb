@@ -105,8 +105,10 @@ module GrapeAPI
           if class_exists?(model_klass)
             model_klass.constantize
           else
-            raise { ActiveRecord::RecordNotFound }
+            model_klass.constantize
           end
+        rescue
+          raise { ActiveRecord::RecordNotFound }
         end
 
         def attributes &block

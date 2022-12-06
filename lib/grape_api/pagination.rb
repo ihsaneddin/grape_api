@@ -121,7 +121,9 @@ module GrapeAPI
         else
           count = collection.is_a?(Array) ? collection.count : collection.count(:all)
         end
-
+        if count.is_a?(Hash)
+          count = count.values.sum
+        end
         Pagy.new(count: count, items: options[:per_page], page: options[:page])
       end
 
