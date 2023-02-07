@@ -3,7 +3,7 @@ module GrapeAPI
     def self.included(base)
       Grape::Endpoint.class_eval do
         def paginate(collection)
-          per_page = GrapeAPI.pagination.config.per_page_param(params) || route_setting(:per_page)
+          per_page = GrapeAPI.pagination.config.per_page_param(params) || route_setting(:per_page) || GrapeAPI.pagination.config.per_page_count
 
           options = {
             :page     => GrapeAPI.pagination.config.page_param(params),
@@ -24,7 +24,6 @@ module GrapeAPI
           per_page = GrapeAPI.pagination.config.per_page
           page     = GrapeAPI.pagination.config.page
           include_total   = GrapeAPI.pagination.config.include_total
-
           header 'Link',          links.join(', ') unless links.empty?
           header total,    GrapeAPI::Pagination.total_from(pagy || collection).to_s if include_total
           header per_page, options[:per_page].to_s
