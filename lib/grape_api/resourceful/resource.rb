@@ -179,12 +179,16 @@ module GrapeAPI
           key
         end
 
-        def resource_params_attributes(*attributes)
+        def resource_params_attributes(*attributes, &block)
           if attributes.empty?
             attributes = resourceful_params(:resource_params_attributes)
           end
-          unless attributes.empty?
-            set_resource_param(:resource_params_attributes, attributes)
+          if block_given?
+            set_resource_param(:resource_params_attributes, block)
+          else
+            if attributes.is_a?(Array)
+              set_resource_param(:resource_params_attributes, attributes) unless attributes.empty?
+            end
           end
           attributes
         end
@@ -280,12 +284,12 @@ module GrapeAPI
             if attributes.empty?
               if posts.present?
                 # attributes = params.require(class_context.resource_params_key)
-                if class_context.resource_params_attributes.empty?
+                if class_context.resource_params_attributes.blank?
                   attributes = {}
                 else
                   _resource_params_attributes_ = class_context.resource_params_attributes
-                  if _resource_params_attributes_[0].is_a?(Proc)
-                    _resource_params_attributes_ = instance_exec(&_resource_params_attributes_[0])
+                  if _resource_params_attributes_.is_a?(Proc)
+                    _resource_params_attributes_ = instance_exec(&_resource_params_attributes_)
                   end
                   attributes = posts.permit(_resource_params_attributes_)
                 end
