@@ -129,18 +129,22 @@ module GrapeAPI
           includes
         end
 
-        def query_scope(query = nil)
+        def query_scope(query = nil, &block)
           query = resourceful_params(:query_scope) if query.nil?
+          if block_given?
+            query = block
+          end
           query = model_klass_constant if query.nil?
           set_resource_param(:query_scope, query)
           #query.respond_to?(:call) ? query.call(model_klass_constant) : query
           query
         end
 
-        def resource_identifier(identifier = nil)
+        def resource_identifier(identifier = nil, &block)
           if identifier.nil?
             identifier = resourceful_params(:resource_identifier)
-            if(identifier.nil?)
+            identifier = block if block_given?
+            if identifier.nil?
               identifier = model_klass_constant.primary_key
               set_resource_param(:resource_identifier, identifier)
             end
@@ -183,8 +187,9 @@ module GrapeAPI
           if attributes.empty?
             attributes = resourceful_params(:resource_params_attributes)
           end
-          if block_given?
-            set_resource_param(:resource_params_attributes, block)
+          attributes = block if block_given?
+          if attributes.is_a?(Proc)
+            set_resource_param(:resource_params_attributes, attributes)
           else
             if attributes.is_a?(Array)
               set_resource_param(:resource_params_attributes, attributes) unless attributes.empty?
@@ -193,8 +198,9 @@ module GrapeAPI
           attributes
         end
 
-        def resource_friendly?(friendly = nil)
+        def resource_friendly?(friendly = nil, &block)
           friendly = resourceful_params[:resource_friendly] if friendly.nil?
+          friendly = block if block_given?
           if friendly.nil?
             set_resource_param(:resource_friendly, false)
           end
@@ -202,7 +208,8 @@ module GrapeAPI
           friendly
         end
 
-        def got_resource_callback(proc = nil)
+        def got_resource_callback proc = nil &block
+          proc = block if block_given?
           proc = resourceful_params[:got_resource_callback] if proc.nil?
           unless proc.nil?
             set_resource_param(:got_resource_callback, proc)
