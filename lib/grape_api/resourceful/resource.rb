@@ -208,7 +208,7 @@ module GrapeAPI
           friendly
         end
 
-        def got_resource_callback proc = nil &block
+        def got_resource_callback proc = nil, &block
           proc = block if block_given?
           proc = resourceful_params[:got_resource_callback] if proc.nil?
           unless proc.nil?
